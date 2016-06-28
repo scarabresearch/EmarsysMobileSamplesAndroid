@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:weightSum="8"
+              android:orientation="vertical">
+
+    <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="2"
+            android:weightSum="10"
+            android:orientation="vertical">
+
+        <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/itemImage"
+                android:contentDescription="@string/description"
+                android:layout_weight="7"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="45dp"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/titleText"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/priceText"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+        <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/availabilityText"
+                android:layout_gravity="center_horizontal"
+                android:layout_weight="1"
+                android:gravity="center"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="@string/recommended"
+            android:id="@+id/textView2"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.07"
+            android:textStyle="bold"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"/>
+
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/recommendedListView"
+            android:scrollbars="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="6"/>
+
+</LinearLayout>

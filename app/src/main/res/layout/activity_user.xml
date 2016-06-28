@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:layout_centerHorizontal="true"
+              android:layout_alignParentTop="true"
+              android:weightSum="1">
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/customer_email"
+            android:id="@+id/textView3"
+            android:layout_weight="0.03"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:ems="10"
+            android:id="@+id/emailText"
+            android:layout_weight="0.03"/>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/customer_id"
+            android:id="@+id/textView4"
+            android:layout_weight="0.03"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/customerIdText"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.03"
+            android:inputType="text"/>
+
+    <Switch
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/login_with_email"
+            android:id="@+id/loginWithEmailSwitch"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.03"
+            android:checked="true"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/recommend_instruction"
+            android:id="@+id/textView5"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.03"/>
+
+    <RadioGroup
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.13"
+            android:orientation="vertical">
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/related"
+                android:id="@+id/relatedRadioButton"
+                android:checked="false"/>
+
+        <RadioButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/also_bought"
+                android:id="@+id/alsoBoughtRadioButton"
+                android:checked="false"/>
+    </RadioGroup>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
+            android:id="@+id/saveButton"
+            android:layout_weight="0.03"
+            android:layout_gravity="center_horizontal"/>
+
+    <Space
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_gravity="end"/>
+
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/show_ids"
+            android:id="@+id/showIdsButton"
+            android:layout_gravity="bottom|end"
+            android:layout_weight="0.03"/>
+
+</LinearLayout>
