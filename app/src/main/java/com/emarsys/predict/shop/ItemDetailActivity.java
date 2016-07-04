@@ -14,6 +14,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +42,9 @@ public class ItemDetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_item_detail);
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         recyclerView = (RecyclerView) findViewById(R.id.recommendedListView);
 
@@ -86,7 +90,8 @@ public class ItemDetailActivity extends AppCompatActivity {
         title.setText(item.getTitle());
         Formatter formatter = new Formatter();
         price.setText(formatter.format("$%.1f", item.getPrice()).toString());
-        String state = item.isAvailable() ? getString(R.string.in_stock) : getString(R.string.out_of_stock);
+        String state = item.isAvailable() ?
+                getString(R.string.in_stock) : getString(R.string.out_of_stock);
         available.setText(getString(R.string.availability) + state);
         int color = item.isAvailable() ? Color.GREEN : Color.RED;
         available.setTextColor(color);
@@ -127,6 +132,8 @@ public class ItemDetailActivity extends AppCompatActivity {
 
             AlertDialog alert = builder.create();
             alert.show();
+        } else if (id == android.R.id.home) {
+            onBackPressed();
         }
 
         return super.onOptionsItemSelected(menuItem);

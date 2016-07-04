@@ -11,8 +11,11 @@ import com.emarsys.predict.shop.shopitems.Item;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -21,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class CategoriesActivity extends AppCompatActivity {
+public class CategoriesActivity extends Fragment {
 
     public static final String CATEGORY = "category_info";
 
@@ -30,15 +33,17 @@ public class CategoriesActivity extends AppCompatActivity {
     private RecommendManager recommendManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_categories);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_categories,
+                container, false);
 
-        setTitle(getString(R.string.categories));
+        //view.setTitle(getString(R.string.categories));
+        getActivity().setTitle(getString(R.string.categories));
 
-        listView = (ListView) findViewById(R.id.categoriesListView);
+        listView = (ListView) view.findViewById(R.id.categoriesListView);
 
-        final SimpleAdapter adapter = new SimpleAdapter(this,
+        final SimpleAdapter adapter = new SimpleAdapter(getContext(),
                 DataSource.sharedDataSource().getCategories());
 
         listView.setAdapter(adapter);
@@ -47,7 +52,7 @@ public class CategoriesActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String category = (String) listView.getItemAtPosition(i);
-                Intent intent = new Intent(CategoriesActivity.this, CategoryActivity.class);
+                Intent intent = new Intent(getContext(), CategoryActivity.class);
                 intent.putExtra(CATEGORY, category);
                 startActivity(intent);
 
@@ -56,23 +61,31 @@ public class CategoriesActivity extends AppCompatActivity {
 
         Map<String, List<Item>> data = new HashMap<>();
         ArrayList<String> categories = new ArrayList<>();
-        recommendedListAdapter = new RecommendedListAdapter(this, categories, data);
+        recommendedListAdapter = new RecommendedListAdapter(getContext(), categories, data);
         recommendedListAdapter.setOnItemClickListener(new RecommendedAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Item item) {
-                Intent intent = new Intent(CategoriesActivity.this, ItemDetailActivity.class);
+                Intent intent = new Intent(getContext(), ItemDetailActivity.class);
                 intent.putExtra("item", item);
                 startActivity(intent);
             }
         });
-        ListView recommendedListView = (ListView) findViewById(R.id.recommendedListView);
+        ListView recommendedListView = (ListView) view.findViewById(R.id.recommendedListView);
         recommendedListView.setAdapter(recommendedListAdapter);
 
         recommendManager = new RecommendManager();
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onStart() {
         super.onStart();
 
         sendRecommend();
@@ -81,7 +94,8 @@ public class CategoriesActivity extends AppCompatActivity {
     private void sendRecommend() {
         recommendManager.sendHomeRecommend(new RecommendListCompletionHandler() {
             @Override
-            public void onRecommendedRequestComplete(final List<String> categories, final HashMap<String, List<Item>> data) {
+            public void onRecommendedRequestComplete(final List<String> categories,
+                                                     final HashMap<String, List<Item>> data) {
                 recommendedListAdapter.clear();
                 recommendedListAdapter.addAll(categories, data);
                 recommendedListAdapter.notifyDataSetChanged();

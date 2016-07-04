@@ -12,14 +12,17 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
@@ -27,7 +30,7 @@ import android.widget.SearchView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SearchActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class SearchActivity extends Fragment implements SearchView.OnQueryTextListener {
 
     private ListView listView;
     private ItemAdapter adapter;
@@ -37,15 +40,17 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     private RecommendManager recommendManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_search);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_search,
+                container, false);
 
-        setTitle(getString(R.string.search));
+        getActivity().setTitle(getString(R.string.search));
 
-        listView = (ListView) findViewById(R.id.itemsListView);
+        setHasOptionsMenu(true);
 
-        adapter = new ItemAdapter(this, DataSource.sharedDataSource().getItems());
+        listView = (ListView) view.findViewById(R.id.itemsListView);
+
+        adapter = new ItemAdapter(getActivity(), DataSource.sharedDataSource().getItems());
 
         listView.setAdapter(adapter);
 
@@ -53,15 +58,15 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 Item item = (Item) listView.getItemAtPosition(i);
-                Intent intent = new Intent(SearchActivity.this, ItemDetailActivity.class);
+                Intent intent = new Intent(getActivity(), ItemDetailActivity.class);
                 intent.putExtra("item", item);
                 startActivity(intent);
             }
         });
 
-        recyclerView = (RecyclerView) findViewById(R.id.recommendedListView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recommendedListView);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -70,7 +75,7 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recommendedAdapter.setOnItemClickListener(new RecommendedAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Item item) {
-                Intent intent = new Intent(SearchActivity.this, ItemDetailActivity.class);
+                Intent intent = new Intent(getActivity(), ItemDetailActivity.class);
                 intent.putExtra("item", item);
                 startActivity(intent);
             }
@@ -78,10 +83,12 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
         recyclerView.setAdapter(recommendedAdapter);
 
         recommendManager = new RecommendManager();
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
         adapter.clear();
@@ -91,22 +98,19 @@ public class SearchActivity extends AppCompatActivity implements SearchView.OnQu
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.search_menu, menu);
 
         SearchManager searchManager = (SearchManager)
-                getSystemService(Context.SEARCH_SERVICE);
+                getActivity().getSystemService(Context.SEARCH_SERVICE);
         MenuItem searchMenuItem = menu.findItem(R.id.search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
         if (searchView != null) {
             searchView.setSearchableInfo(searchManager.
-                    getSearchableInfo(getComponentName()));
+                    getSearchableInfo(getActivity().getComponentName()));
             searchView.setSubmitButtonEnabled(true);
             searchView.setOnQueryTextListener(this);
         }
-
-        return true;
     }
 
     @Override

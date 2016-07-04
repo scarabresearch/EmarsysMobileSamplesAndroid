@@ -13,19 +13,23 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class CartActivity extends AppCompatActivity {
+public class CartActivity extends Fragment {
 
     private ListView listView;
     private CartItemAdapter adapter;
@@ -35,19 +39,22 @@ public class CartActivity extends AppCompatActivity {
     private RecommendManager recommendManager;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cart);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_cart,
+                container, false);
 
-        listView = (ListView) findViewById(R.id.cartListView);
+        setHasOptionsMenu(true);
 
-        adapter = new CartItemAdapter(this, Cart.sharedCart().getShopCartItems());
+        listView = (ListView) view.findViewById(R.id.cartListView);
+
+        adapter = new CartItemAdapter(getContext(), Cart.sharedCart().getShopCartItems());
 
         listView.setAdapter(adapter);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recommendedListView);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recommendedListView);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
 
@@ -55,7 +62,7 @@ public class CartActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 ShopCartItem item = (ShopCartItem) listView.getItemAtPosition(i);
-                Intent intent = new Intent(CartActivity.this, ItemDetailActivity.class);
+                Intent intent = new Intent(getContext(), ItemDetailActivity.class);
                 intent.putExtra("item", item.getItem());
                 startActivity(intent);
             }
@@ -74,7 +81,7 @@ public class CartActivity extends AppCompatActivity {
         recommendedAdapter.setOnItemClickListener(new RecommendedAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(Item item) {
-                Intent intent = new Intent(CartActivity.this, ItemDetailActivity.class);
+                Intent intent = new Intent(getContext(), ItemDetailActivity.class);
                 intent.putExtra("item", item);
                 startActivity(intent);
             }
@@ -82,20 +89,22 @@ public class CartActivity extends AppCompatActivity {
         recyclerView.setAdapter(recommendedAdapter);
 
         recommendManager = new RecommendManager();
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
 
-        setTitle(getString(R.string.cart));
+        getActivity().setTitle(getString(R.string.cart));
 
         updateCartList();
         sendRecommend();
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         updateMenu();
     }
@@ -111,7 +120,7 @@ public class CartActivity extends AppCompatActivity {
         final ShopCartItem item = adapter.getItem(pos);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(
-                CartActivity.this);
+                getContext());
 
         alert.setTitle(getString(R.string.action_delete));
         alert.setMessage(getString(R.string.delete_message));
@@ -147,12 +156,11 @@ public class CartActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_buy, menu);
+        inflater.inflate(R.menu.menu_buy, menu);
         this.menu = menu;
         updateMenu();
-        return true;
     }
 
     @Override
@@ -189,7 +197,7 @@ public class CartActivity extends AppCompatActivity {
     }
 
     private void showAlert(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(message);
         builder.setCancelable(true);
 
@@ -208,10 +216,12 @@ public class CartActivity extends AppCompatActivity {
     private void updateMenu() {
         if (menu != null) {
             MenuItem menuItem = menu.findItem(R.id.action_buy);
-            if (listView.getCount() > 0) {
-                menuItem.setEnabled(true);
-            } else {
-                menuItem.setEnabled(false);
+            if (menuItem != null) {
+                if (listView.getCount() > 0) {
+                    menuItem.setEnabled(true);
+                } else {
+                    menuItem.setEnabled(false);
+                }
             }
         }
     }

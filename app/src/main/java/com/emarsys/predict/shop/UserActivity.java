@@ -8,10 +8,14 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.Switch;
@@ -20,7 +24,7 @@ import android.widget.TextView;
 import java.util.Formatter;
 import java.util.UUID;
 
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends Fragment {
 
     public static final String CUSTOMER_EMAIL = "customer_email";
     public static final String CUSTOMER_ID = "customer_id";
@@ -38,17 +42,20 @@ public class UserActivity extends AppCompatActivity {
     private Menu menu;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_user,
+                container, false);
 
-        emailText = (TextView) findViewById(R.id.emailText);
-        customerIDText = (TextView) findViewById(R.id.customerIdText);
-        loginWithEmailSwitch = (Switch) findViewById(R.id.loginWithEmailSwitch);
-        relatedRadioButton = (RadioButton) findViewById(R.id.relatedRadioButton);
-        alsoBoughtRadioButton = (RadioButton) findViewById(R.id.alsoBoughtRadioButton);
+        setHasOptionsMenu(true);
 
-        Button saveButton = (Button) findViewById(R.id.saveButton);
+        emailText = (TextView) view.findViewById(R.id.emailText);
+        customerIDText = (TextView) view.findViewById(R.id.customerIdText);
+        loginWithEmailSwitch = (Switch) view.findViewById(R.id.loginWithEmailSwitch);
+        relatedRadioButton = (RadioButton) view.findViewById(R.id.relatedRadioButton);
+        alsoBoughtRadioButton = (RadioButton) view.findViewById(R.id.alsoBoughtRadioButton);
+
+        Button saveButton = (Button) view.findViewById(R.id.saveButton);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -56,27 +63,28 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        Button showIdsButton = (Button) findViewById(R.id.showIdsButton);
+        Button showIdsButton = (Button) view.findViewById(R.id.showIdsButton);
         showIdsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showIds();
             }
         });
+
+        return view;
     }
 
     @Override
-    protected void onStart() {
+    public void onStart() {
         super.onStart();
         setStoreValues();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_login, menu);
+        inflater.inflate(R.menu.menu_login, menu);
         this.menu = menu;
-        return true;
     }
 
     @Override
@@ -95,7 +103,7 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void save() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor editor = sharedPref.edit();
 
         String email = emailText.getText().toString();
@@ -129,7 +137,7 @@ public class UserActivity extends AppCompatActivity {
     private void login() {
         String message;
         Session session = Session.getInstance();
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
         boolean loginWithEmail = loginWithEmailSwitch.isChecked();
 
         if (logged) {
@@ -177,7 +185,7 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void showAlert(String message) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(message);
         builder.setCancelable(true);
 
@@ -194,7 +202,7 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void setStoreValues() {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         emailText.setText(sharedPref.getString(CUSTOMER_EMAIL, ""));
         customerIDText.setText(sharedPref.getString(CUSTOMER_ID, ""));
