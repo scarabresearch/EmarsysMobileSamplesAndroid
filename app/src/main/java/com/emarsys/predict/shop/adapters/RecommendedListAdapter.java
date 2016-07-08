@@ -76,10 +76,11 @@ public class RecommendedListAdapter extends ArrayAdapter<String> {
         data.clear();
     }
 
-    public void addAll(Collection<? extends String> newCategories,
-                       Map<String, List<Item>> newData) {
-        categories.addAll(newCategories);
-        data.putAll(newData);
+    public void addAll(String category, List<Item> newData) {
+        if (!categories.contains(category)) {
+            categories.add(category);
+            data.put(category, newData);
+        }
     }
 
     public void setOnItemClickListener(RecommendedAdapter.OnItemClickListener l) {

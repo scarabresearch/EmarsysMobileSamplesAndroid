@@ -143,10 +143,13 @@ public class CategoryActivity extends AppCompatActivity implements SearchView.On
     }
 
     private void sendRecommend() {
+        recommendedAdapter.clear();
+        recommendedAdapter.notifyDataSetChanged();
+        recyclerView.invalidate();
+
         RecommendCompletionHandler handler = new RecommendCompletionHandler() {
             @Override
             public void onRecommendedRequestComplete(final List<Item> resultData) {
-                recommendedAdapter.clear();
                 recommendedAdapter.setData(resultData);
                 recommendedAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();

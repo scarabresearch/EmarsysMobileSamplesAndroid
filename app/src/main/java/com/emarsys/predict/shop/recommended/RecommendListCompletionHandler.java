@@ -7,6 +7,5 @@ import java.util.List;
 
 public abstract class RecommendListCompletionHandler {
 
-    public abstract void onRecommendedRequestComplete(List<String> categories,
-                                                      HashMap<String, List<Item>> data);
+    public abstract void onRecommendedRequestComplete(String category, List<Item> data);
 }

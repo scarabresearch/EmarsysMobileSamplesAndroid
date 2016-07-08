@@ -78,6 +78,13 @@ public class UserActivity extends Fragment {
     public void onStart() {
         super.onStart();
         setStoreValues();
+        updateMenu();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateMenu();
     }
 
     @Override
@@ -85,6 +92,7 @@ public class UserActivity extends Fragment {
         // Inflate the menu; this adds items to the action bar if it is present.
         inflater.inflate(R.menu.menu_login, menu);
         this.menu = menu;
+        updateMenu();
     }
 
     @Override
@@ -176,11 +184,15 @@ public class UserActivity extends Fragment {
     }
 
     private void updateMenu() {
+        if (menu == null) return;
+
         MenuItem menuItem = menu.findItem(R.id.action_login);
-        if (logged) {
-            menuItem.setTitle(getString(R.string.action_logout));
-        } else {
-            menuItem.setTitle(getString(R.string.action_login));
+        if (menuItem != null) {
+            if (logged) {
+                menuItem.setTitle(getString(R.string.action_logout));
+            } else {
+                menuItem.setTitle(getString(R.string.action_login));
+            }
         }
     }
 

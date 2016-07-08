@@ -127,10 +127,13 @@ public class SearchActivity extends Fragment implements SearchView.OnQueryTextLi
     }
 
     private void sendRecommend() {
+        recommendedAdapter.clear();
+        recommendedAdapter.notifyDataSetChanged();
+        recyclerView.invalidate();
+
         recommendManager.sendPersonalRecommend(searchTerm, new RecommendCompletionHandler() {
             @Override
             public void onRecommendedRequestComplete(final List<Item> resultData) {
-                recommendedAdapter.clear();
                 recommendedAdapter.setData(resultData);
                 recommendedAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();

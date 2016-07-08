@@ -184,10 +184,13 @@ public class CartActivity extends Fragment {
     }
 
     private void sendRecommend() {
+        recommendedAdapter.clear();
+        recommendedAdapter.notifyDataSetChanged();
+        recyclerView.invalidate();
+
         recommendManager.sendCartRecommend(new RecommendCompletionHandler() {
             @Override
             public void onRecommendedRequestComplete(final List<Item> resultData) {
-                recommendedAdapter.clear();
                 recommendedAdapter.setData(resultData);
                 recommendedAdapter.notifyDataSetChanged();
                 recyclerView.invalidate();

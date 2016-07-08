@@ -40,8 +40,6 @@ public class RecommendManager {
     }
 
     public void sendHomeRecommend(final RecommendListCompletionHandler callBack) {
-        final HashMap<String, List<Item>> data = new HashMap<>();
-        final List<String> categories = new ArrayList<>();
 
         Transaction transaction = new Transaction();
         transaction.cart(sharedCart().getCartItems());
@@ -59,20 +57,14 @@ public class RecommendManager {
 
                     if (category != null && !category.isEmpty()) {
 
-                        if (!categories.contains(category)) {
-                            categories.add(category);
-                        }
-
-                        if (!data.containsKey(category)) {
-                            data.put(category, new ArrayList<Item>());
-                        }
+                        List<Item> data = new ArrayList<>();
 
                         for (RecommendedItem next : result.getProducts()) {
                             Item item = new Item(next);
-                            data.get(category).add(item);
+                            data.add(item);
                         }
 
-                        callBack.onRecommendedRequestComplete(categories, data);
+                        callBack.onRecommendedRequestComplete(category, data);
                     }
                 }
             });

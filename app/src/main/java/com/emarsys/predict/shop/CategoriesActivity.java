@@ -31,6 +31,7 @@ public class CategoriesActivity extends Fragment {
     private ListView listView;
     private RecommendedListAdapter recommendedListAdapter;
     private RecommendManager recommendManager;
+    private ListView recommendedListView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -38,7 +39,6 @@ public class CategoriesActivity extends Fragment {
         View view = inflater.inflate(R.layout.activity_categories,
                 container, false);
 
-        //view.setTitle(getString(R.string.categories));
         getActivity().setTitle(getString(R.string.categories));
 
         listView = (ListView) view.findViewById(R.id.categoriesListView);
@@ -70,7 +70,7 @@ public class CategoriesActivity extends Fragment {
                 startActivity(intent);
             }
         });
-        ListView recommendedListView = (ListView) view.findViewById(R.id.recommendedListView);
+        recommendedListView = (ListView) view.findViewById(R.id.recommendedListView);
         recommendedListView.setAdapter(recommendedListAdapter);
 
         recommendManager = new RecommendManager();
@@ -92,13 +92,16 @@ public class CategoriesActivity extends Fragment {
     }
 
     private void sendRecommend() {
+        recommendedListAdapter.clear();
+        recommendedListAdapter.notifyDataSetChanged();
+        recommendedListView.invalidate();
+
         recommendManager.sendHomeRecommend(new RecommendListCompletionHandler() {
             @Override
-            public void onRecommendedRequestComplete(final List<String> categories,
-                                                     final HashMap<String, List<Item>> data) {
-                recommendedListAdapter.clear();
-                recommendedListAdapter.addAll(categories, data);
+            public void onRecommendedRequestComplete(final String category, final List<Item> data) {
+                recommendedListAdapter.addAll(category, data);
                 recommendedListAdapter.notifyDataSetChanged();
+                recommendedListView.invalidate();
             }
         });
     }
