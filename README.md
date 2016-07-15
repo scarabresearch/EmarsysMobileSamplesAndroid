@@ -2,7 +2,6 @@
 
 ### Requirements
 - Android Studio 2
-- Installed EmarsysPredictSDKAndroid
 
 ### Build Instructions
 ```sh
